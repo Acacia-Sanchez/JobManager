@@ -6,7 +6,7 @@ target/
 .mvn/
 mvnw
 mvnw.cmd
-jobtrucker.log 
+*.log*
 
 ### STS ###
 .apt_generated
