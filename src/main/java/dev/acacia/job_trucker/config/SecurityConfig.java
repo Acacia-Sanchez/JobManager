@@ -20,7 +20,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/api/user/register"))
+        .csrf(csrf -> csrf.disable())  // Deshabilitar CSRF para toda la app, ya que al ser un API no es necesario
             .authorizeHttpRequests(authz -> authz
                             .requestMatchers("/api/user/register").permitAll()  // Permitir el acceso sin autenticación al registro
                             .anyRequest().authenticated()  // Requiere autenticación para otras rutas

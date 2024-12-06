@@ -25,5 +25,12 @@ public class UserService {
         );
         return userRepository.save(user);
     }
+
+    public void deleteUser(Long id) {
+        if (id == null || !userRepository.existsById(id)) {
+            throw new GlobalExceptionHandler.UserNotFoundException(); // este error se manejará desde el GlobalExceptionHandler.java
+        }
+        userRepository.deleteById(id);
+    }
     
 }
