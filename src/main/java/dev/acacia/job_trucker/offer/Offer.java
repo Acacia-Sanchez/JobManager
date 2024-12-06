@@ -34,7 +34,7 @@ public class Offer {
     private LocalDate offDate, offStepDate;
     private boolean offFavourite;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)  // valor del enum se guarda como cadena en la base de datos
     private OffStep offStep;  // llama a la clase OffStep (necesaria por ser un ENUM)
 
     @ManyToOne
