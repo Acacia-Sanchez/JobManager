@@ -9,23 +9,34 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+
+import dev.acacia.job_trucker.exceptions.CustomAuthenticationEntryPoint;
+
 import org.springframework.security.core.userdetails.User;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
+    public SecurityConfig(CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
+        this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
+    }
     
-   // Configuración de seguridad usando SecurityFilterChain
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-        .csrf(csrf -> csrf.disable())  // Deshabilitar CSRF para toda la app, ya que al ser un API no es necesario
-            .authorizeHttpRequests(authz -> authz
+            .csrf(csrf -> csrf.disable())  // Deshabilitar CSRF para toda la app, ya que al ser un API no es necesario
+
+            .exceptionHandling(exceptions -> exceptions  // Configura el punto de entrada de autenticación personalizado
+                .authenticationEntryPoint(customAuthenticationEntryPoint))
+            
+            .authorizeHttpRequests(authz -> authz  // Qué puntos de entrada pueden acceder sin autenticación y cuales no
                             .requestMatchers("/api/user/register").permitAll()  // Permitir el acceso sin autenticación al registro
                             .anyRequest().authenticated()  // Requiere autenticación para otras rutas
             )
-            .formLogin(withDefaults())  // Activar autenticación por formulario con configuración predeterminada
             .httpBasic(withDefaults());  // Configura la autenticación básica
             
         return http.build();

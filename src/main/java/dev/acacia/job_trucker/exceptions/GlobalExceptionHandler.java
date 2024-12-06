@@ -1,9 +1,12 @@
-package dev.acacia.job_trucker.user;
+package dev.acacia.job_trucker.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import dev.acacia.job_trucker.user.UserRepository;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -18,23 +21,40 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
-        String customMessage = "ERROR: 500. An unexpected error occurred. Please try again later.";
+        String customMessage = "\n      ERROR: 500. An unexpected error occurred. Please try again later.";
         return new ResponseEntity<>(customMessage, HttpStatus.INTERNAL_SERVER_ERROR);  // 500 Internal Server Error
     }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException ex) {
-        String customMessage = "ERROR 404: USER NOT FOUND. This user doesn't exist.";
+        String customMessage = "\n      ERROR 404: USER NOT FOUND.";
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(customMessage);
     }
 
-    // Clase interna estática
+    @ExceptionHandler(NoUsersFoundException.class)
+    public ResponseEntity<String> handleNoUsersFoundException(NoUsersFoundException ex) {
+        String customMessage = "\n      ERROR 404: NO USERS FOUND.";
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(customMessage);
+    }
+
+    // CLASES INTERNAS ESTATICAS DE EXCEPCIONES ////
+    
     public static class UserNotFoundException extends RuntimeException {
         public UserNotFoundException() {
-            super("User not found");
+            super("\n      ERROR 404: User not found");
         }
         public UserNotFoundException(String message) {
             super(message);
         }
     }
+
+    public static class NoUsersFoundException extends RuntimeException {
+        public NoUsersFoundException() {
+            super("\n      ERROR 404: No users found");
+        }
+        public NoUsersFoundException(String message) {
+            super(message);
+        }
+    }
+
 }
