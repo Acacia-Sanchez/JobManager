@@ -1,14 +1,13 @@
 # JobManager
 ## Registra tus oportunidades laborales
 
-**Aplicación en JAVA que permita a los usuarios gestionar su búsqueda de empleo de manera organizada, registrando las ofertas que les interesan y almacenando toda la información necesaria para las candidaturas**
+**Aplicación con JAVA Spring Boot y MVC que permita a los usuarios gestionar su búsqueda de empleo de manera organizada, registrando las ofertas que les interesan y almacenando toda la información necesaria para las candidaturas**
 
 ### OBJETIVO
 Crear una aplicación para PC que permita a los usuarios gestionar su búsqueda de empleo de manera
 organizada, registrando las ofertas que les interesan y almacenando toda la información necesaria
 para las candidaturas.
 
-Lenguaje de programación Java con Spring Boot, base de datos MySQL
 
 ### Lo que se necesita para llevarlo a cabo
 **1. Backend**
@@ -38,3 +37,17 @@ usuario.
 * Comunicación con Backend: Uso de HttpClient para realizar peticiones a la API.
   
 **APP PARA MOVIL (Android e IOS)**
+
+# TECNOLOGIAS APLICADAS
+* Java
+* Maven
+* Spring Boot
+* Spring Data JPA
+* Hibernate
+* MySQL Database
+* MySQL Workbench
+* Postman
+* Tests con JUnit y Hamcrest
+* Visual Studio Code
+* Jira
+* Gamma
