@@ -1,6 +1,8 @@
 package dev.acacia.job_trucker.user;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,9 +45,12 @@ public class UserController {
     }
 
     @PatchMapping("/update/{id}")
-    public ResponseEntity<String> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
-        userService.updateUser(id, userDTO); // Pasamos el ID y el DTO al servicio
-        return ResponseEntity.ok("\n    User updated successfully");
+    public ResponseEntity<Map<String, Object>> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+        User updateUser = userService.updateUser(id, userDTO); // Pasamos el ID y el DTO al servicio y el resultado lo guardamos en updateUser
+        Map<String, Object> response = new HashMap<>();
+        response.put("MESSAGE:", "User updated successfully");
+        response.put("user", updateUser);
+        return ResponseEntity.ok(response);
     }
     
     @DeleteMapping("/delete/{id}")
@@ -53,7 +58,11 @@ public class UserController {
         userService.deleteUser(id);   // Pasamos el ID al servicio
         return ResponseEntity.ok("\n    User deleted successfully");
     }
-    
+    /* 
+    @PostMapping("/login")
+    public ResponseEntity<> login(@PathVariable Long id, @RequestBody String userEmail, String hashPass) {
+
+    } */
 
 
 

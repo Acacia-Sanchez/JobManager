@@ -37,8 +37,6 @@ public class UserDTO {
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }
-
-    // Getters and Setters
     
     
 }

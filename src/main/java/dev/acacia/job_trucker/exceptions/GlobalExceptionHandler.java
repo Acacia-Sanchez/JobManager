@@ -37,6 +37,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(customMessage);
     }
 
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<String> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {
+        String customMessage = "\n      ERROR 409: CONFLICT. EMAIL ALREADY EXISTS.";
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(customMessage);
+
+    }
+    
+
     // CLASES INTERNAS ESTATICAS DE EXCEPCIONES ////
     
     public static class UserNotFoundException extends RuntimeException {
@@ -47,7 +55,7 @@ public class GlobalExceptionHandler {
             super(message);
         }
     }
-
+    
     public static class NoUsersFoundException extends RuntimeException {
         public NoUsersFoundException() {
             super("\n      ERROR 404: No users found");
@@ -56,5 +64,10 @@ public class GlobalExceptionHandler {
             super(message);
         }
     }
-
+    
+    public static class EmailAlreadyExistsException extends RuntimeException {
+        public EmailAlreadyExistsException(String message) {
+            super(message);
+        }
+    }
 }

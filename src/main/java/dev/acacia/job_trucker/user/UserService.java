@@ -6,11 +6,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import dev.acacia.job_trucker.exceptions.GlobalExceptionHandler;
+import dev.acacia.job_trucker.exceptions.GlobalExceptionHandler.EmailAlreadyExistsException;
 import dev.acacia.job_trucker.exceptions.GlobalExceptionHandler.NoUsersFoundException;
 
 @Service
 public class UserService {
-    
+
     private UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -20,20 +21,26 @@ public class UserService {
     }
 
     public User registerUser(UserDTO userDTO) {
+        // Comprobar si email ya está registrado en la bbdd, antes de guardar el DTO en
+        // User
+        if (userRepository.existsByUserEmail(userDTO.getUserEmail())) {
+            throw new EmailAlreadyExistsException(
+                    "ERROR: The email address is already in use. Please choose another one.");
+        }
+
         String encodedPassword = passwordEncoder.encode(userDTO.getUserHashPass());
         User user = new User(
                 userDTO.getUserName(),
-                userDTO.getUserAddress(), 
-                userDTO.getUserPhone(), 
-                encodedPassword, 
-                userDTO.getUserEmail()
-        );
+                userDTO.getUserAddress(),
+                userDTO.getUserPhone(),
+                encodedPassword,
+                userDTO.getUserEmail());
         return userRepository.save(user);
     }
 
     public void deleteUser(Long id) {
         if (id == null || !userRepository.existsById(id)) {
-            throw new GlobalExceptionHandler.UserNotFoundException(); 
+            throw new GlobalExceptionHandler.UserNotFoundException();
         }
         userRepository.deleteById(id);
     }
@@ -53,15 +60,16 @@ public class UserService {
         return users;
     }
 
-    public void updateUser(Long id, UserDTO userDTO) {
+    public User updateUser(Long id, UserDTO userDTO) {
         if (id == null || !userRepository.existsById(id)) {
             throw new GlobalExceptionHandler.UserNotFoundException();
         }
-    
+
         // Obtener el usuario existente
         User user = getUser(id);
-    
-        // Actualizar campos solo si no son nulos
+
+        // Actualizar campos solo si no son nulos en postman
+        // ya que userDTO es lo que se envía dede postman
         if (userDTO.getUserName() != null) {
             user.setUserName(userDTO.getUserName());
         }
@@ -72,15 +80,22 @@ public class UserService {
             user.setUserPhone(userDTO.getUserPhone());
         }
         if (userDTO.getUserHashPass() != null) {
-            user.setUserHashPass(userDTO.getUserHashPass());
+            String encodedPassword = passwordEncoder.encode(userDTO.getUserHashPass());
+            user.setUserHashPass(encodedPassword); // guarda la pass encriptada, no la pasada por DTO
         }
         if (userDTO.getUserEmail() != null) {
+            // Comprobar si email ya está registrado en la bbdd, antes de guardar el DTO en
+            // User
+            if (userRepository.existsByUserEmail(userDTO.getUserEmail())) {
+                throw new EmailAlreadyExistsException(
+                        "ERROR: The email address is already in use. Please choose another one.");
+            }
             user.setUserEmail(userDTO.getUserEmail());
         }
-    
+
         // Guardar el usuario actualizado en el repositorio
         userRepository.save(user);
+        return user;
     }
-    
-    
+
 }
