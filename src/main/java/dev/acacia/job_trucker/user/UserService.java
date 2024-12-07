@@ -32,7 +32,7 @@ public class UserService {
         // User
         if (userRepository.existsByUserEmail(userDTO.getUserEmail())) {
             throw new EmailAlreadyExistsException(
-                    "ERROR: The email address is already in use. Please choose another one.");
+                    "\n   ERROR: The email address is already in use. Please choose another one.");
         }
 
         String encodedPassword = passwordEncoder.encode(userDTO.getUserHashPass());
@@ -95,7 +95,7 @@ public class UserService {
             // User
             if (userRepository.existsByUserEmail(userDTO.getUserEmail())) {
                 throw new EmailAlreadyExistsException(
-                        "ERROR: The email address is already in use. Please choose another one.");
+                        "\n   ERROR: The email address is already in use. Please choose another one.");
             }
             user.setUserEmail(userDTO.getUserEmail());
         }
@@ -113,11 +113,11 @@ public class UserService {
         // le paso userEmail y userHashPass al metodo del repository y lo que devuelve el método se guarda en el objeto user
         Optional<User> user = userRepository.loginByuserIdAnduserEmailAnduserHashPass(id, userEmail, userHashPass);
         if (user.isPresent()) {  
-            logger.info("Login successful for user: {}", userEmail);
+            logger.info("\n   Login successful for user: {}", userEmail);
             return true;
         }
     
-        logger.warn("Login failed for user: {}", userEmail);
+        logger.warn("\n   Login failed for user: {}", userEmail);
         return false;
     }
     

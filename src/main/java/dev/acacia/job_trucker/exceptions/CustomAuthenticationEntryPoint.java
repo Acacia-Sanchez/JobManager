@@ -18,7 +18,6 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // HTTP 401
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        String customMessage = "ERROR 404: NO USERS FOUND.";  //  <--- ojo a esto 
         response.getWriter().write("\n     ERROR 401: UNAUTHORIZED. You must write your credentials or be logged.");
     }
     

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/user")
@@ -66,12 +70,17 @@ public class UserController {
     public ResponseEntity<String> login(@PathVariable Long id, @RequestBody LoginDTO loginDTO) {
         boolean success = userService.login(id, loginDTO.getUserEmail(), loginDTO.getUserHashPass());
         if (success) {
-            return ResponseEntity.ok("User logged in successfully");
+            return ResponseEntity.ok("\n   User logged in successfully");
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("ERROR 401: UNAUTHORIZED. Email or Password isn't correct for this id");
+                .body("\n   ERROR 401: UNAUTHORIZED. Email or Password isn't correct for this id");
     }
 
-
+    @DeleteMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+        // Spring Security eliminar la sesión activa HTTP en el servidor
+        new SecurityContextLogoutHandler().logout(request, response, null);
+        return ResponseEntity.ok("\n   User logged out successfully");
+    }
 
 }
