@@ -33,15 +33,21 @@ public class UserController {
     // EXCEPTION HANDLER ///
 
     @PostMapping("/register")  // acceso público, siempre ROL USER
-    public ResponseEntity<String> registerUser(@RequestBody UserDTO userDTO) {
-        userService.registerUser(userDTO); // Pasamos el DTO al servicio
-        return ResponseEntity.ok("\n    User registered successfully");
+    public ResponseEntity<Map<String, Object>> registerUser(@RequestBody UserDTO userDTO) {
+        User registeredUser = userService.registerUser(userDTO); // Pasamos el DTO al servicio
+        Map<String, Object> response = new HashMap<>();
+        response.put("MESSAGE", "User registered successfully with role USER");
+        response.put("user", registeredUser);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/admin/register") // solo el admin puede elegir entre generar ADMIN o USER
-    public ResponseEntity<String> registerUserWithRole(@RequestBody UserDTO userDTO) {
-        userService.registerUserWithRole(userDTO); // Pasamos el DTO al servicio
-        return ResponseEntity.ok("\n    User WITH ROLE " + userDTO.getUserRole() + " registered successfully");
+    public ResponseEntity<Map<String, Object>> registerUserWithRole(@RequestBody UserDTO userDTO) {
+        User registeredUserWithRole = userService.registerUserWithRole(userDTO); // Pasamos el DTO al servicio
+        Map<String, Object> response = new HashMap<>();
+        response.put("MESSAGE", "User registered successfully with role " + userDTO.getUserRole());
+        response.put("user", registeredUserWithRole);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/admin/get/{id}") // solo el admin puede ver los users
@@ -58,11 +64,11 @@ public class UserController {
 
     @PatchMapping("/user/update/{id}")
     public ResponseEntity<Map<String, Object>> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
-        User updateUser = userService.updateUser(id, userDTO); // Pasamos el ID y el DTO al servicio y el resultado lo
+        User updatedUser = userService.updateUser(id, userDTO); // Pasamos el ID y el DTO al servicio y el resultado lo
                                                                // guardamos en updateUser
         Map<String, Object> response = new HashMap<>();
         response.put("MESSAGE", "User updated successfully");
-        response.put("user", updateUser);
+        response.put("user", updatedUser);
         return ResponseEntity.ok(response);
     }
 

@@ -64,7 +64,8 @@ public class UserService {
                 userDTO.getUserEmail(),
                 role);
 
-        return userRepository.save(user);  // Guarda el DTO en User
+        userRepository.save(user);  // Guarda el DTO en User
+        return user;  // muestra el User
     }
 
     public User registerUserWithRole(UserDTO userDTO) {  // solo para ADMINs
