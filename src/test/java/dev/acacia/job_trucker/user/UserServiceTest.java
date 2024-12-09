@@ -42,6 +42,7 @@ public class UserServiceTest {
         user.setUserAddress("Ruedes, Gijòn");
         user.setUserPhone("627909745");
         user.setUserHashPass("1234Pass");
+//        user.setUserRole("USER");
     }
 
     
@@ -66,8 +67,8 @@ public class UserServiceTest {
     @Test
     void testGetAllUsers() {
         List<User> users = Arrays.asList(
-            new User("acacia", "dirección aca", "6274 909 745", "1234pass", "aca@gmail.com"),
-            new User("bouba", "dirección bb", "722683424", "4567pass", "bouba@gmail.com")
+//            new User("acacia", "dirección aca", "6274 909 745", "1234pass", "aca@gmail.com", "ADMIN"),
+            // new User("bouba", "dirección bb", "722683424", "4567pass", "bouba@gmail.com", "USER")
         );
         when(userRepository.findAll()).thenReturn(users);
 

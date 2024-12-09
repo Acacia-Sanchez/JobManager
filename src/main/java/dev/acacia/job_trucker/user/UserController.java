@@ -20,7 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api")
 public class UserController {
 
     private UserService userService;
@@ -32,41 +32,47 @@ public class UserController {
     // EL MANEJO DE ERRORES LO HAGO DESDE EL SERVICE, QUE A SU VEZ LLAMA AL GLOBAL
     // EXCEPTION HANDLER ///
 
-    @PostMapping("/register")
+    @PostMapping("/register")  // acceso público, siempre ROL USER
     public ResponseEntity<String> registerUser(@RequestBody UserDTO userDTO) {
         userService.registerUser(userDTO); // Pasamos el DTO al servicio
         return ResponseEntity.ok("\n    User registered successfully");
     }
 
-    @GetMapping("/get/{id}")
+    @PostMapping("/admin/register") // solo el admin puede elegir entre generar ADMIN o USER
+    public ResponseEntity<String> registerUserWithRole(@RequestBody UserDTO userDTO) {
+        userService.registerUserWithRole(userDTO); // Pasamos el DTO al servicio
+        return ResponseEntity.ok("\n    User WITH ROLE " + userDTO.getUserRole() + " registered successfully");
+    }
+
+    @GetMapping("/admin/get/{id}") // solo el admin puede ver los users
     public ResponseEntity<User> getUser(@PathVariable Long id) {
         User user = userService.getUser(id); // Pasamos el ID al servicio
         return ResponseEntity.ok(user);
     }
 
-    @GetMapping("/getAll")
+    @GetMapping("/admin/getAll") // solo el admin puede ver los users
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers(); // Llamamos al servicio
         return ResponseEntity.ok(users);
     }
 
-    @PatchMapping("/update/{id}")
+    @PatchMapping("/user/update/{id}")
     public ResponseEntity<Map<String, Object>> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
         User updateUser = userService.updateUser(id, userDTO); // Pasamos el ID y el DTO al servicio y el resultado lo
                                                                // guardamos en updateUser
         Map<String, Object> response = new HashMap<>();
-        response.put("MESSAGE:", "User updated successfully");
+        response.put("MESSAGE", "User updated successfully");
         response.put("user", updateUser);
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/user/delete/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id); // Pasamos el ID al servicio
         return ResponseEntity.ok("\n    User deleted successfully");
     }
 
-    @PostMapping("/login/{id}")
+    @PostMapping("/user/login/{id}")
     public ResponseEntity<String> login(@PathVariable Long id, @RequestBody LoginDTO loginDTO) {
         boolean success = userService.login(id, loginDTO.getUserEmail(), loginDTO.getUserHashPass());
         if (success) {
@@ -76,7 +82,7 @@ public class UserController {
                 .body("\n   ERROR 401: UNAUTHORIZED. Email or Password isn't correct for this id");
     }
 
-    @DeleteMapping("/logout")
+    @DeleteMapping("/user/logout")
     public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
         // Spring Security eliminar la sesión activa HTTP en el servidor
         new SecurityContextLogoutHandler().logout(request, response, null);

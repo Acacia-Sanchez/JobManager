@@ -7,6 +7,9 @@ public class UserDTO {
     private String userPhone;
     private String userHashPass;
     private String userEmail;
+    
+    private UserRole userRole;
+
     public String getUserName() {
         return userName;
     }
@@ -38,5 +41,11 @@ public class UserDTO {
         this.userEmail = userEmail;
     }
     
+    public UserRole getUserRole() {
+        return userRole;
+    }
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
+    }
     
 }
