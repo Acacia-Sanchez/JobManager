@@ -26,7 +26,7 @@ public class User {
     @Enumerated(EnumType.STRING)  // valor del enum se guarda como cadena en la base de datos
     private UserRole userRole;  // llama a la clase UserRole (necesaria por ser un ENUM)
  
-    @Column(unique = true)
+    @Column(name = "user_email", unique = true)
     private String userEmail;
     
     @OneToMany(mappedBy = "user")
