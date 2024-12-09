@@ -1,5 +1,14 @@
 package dev.acacia.job_trucker.user;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class LoginDTO {
 
     private String userEmail;
@@ -17,4 +26,7 @@ public class LoginDTO {
     public void setUserHashPass(String userHashPass) {
         this.userHashPass = userHashPass;
     }
+
+    // AQUÍ DEBAJO IRÍAN LOS GETTERS Y SETTERS DE TODOS LOS ATRIBUTOS
+    // PERO TENGO LOMBOK, ASÍ QUE...
 }
