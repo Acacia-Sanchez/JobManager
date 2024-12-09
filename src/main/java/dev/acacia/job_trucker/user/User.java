@@ -30,7 +30,7 @@ public class User {
     private String userEmail;
     
     @OneToMany(mappedBy = "user")
-    private List<Offer> offer;
+    private List<Offer> offers;
  
     public User (String userName, String userAddress, String userPhone, String userHashPass, String userEmail, UserRole userRole) {
         this.userName = userName;
@@ -94,11 +94,11 @@ public class User {
     }
 
     public List<Offer> getOffers() {
-        return offer;
+        return offers;
     }
 
-    public void setOffers(List<Offer> offer) {
-        this.offer = offer;
+    public void setOffers(List<Offer> offers) {
+        this.offers = offers;
     }
 
     public UserRole getUserRole() {

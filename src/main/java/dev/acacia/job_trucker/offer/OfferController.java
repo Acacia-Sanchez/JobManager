@@ -21,7 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
-@RequestMapping("/api/offers")
+@RequestMapping("/api/offer")
 public class OfferController {
  
     private OfferService offerService;
@@ -30,10 +30,16 @@ public class OfferController {
         this.offerService = offerService;
     }
 
+    // EL MANEJO DE ERRORES LO HAGO DESDE EL SERVICE, QUE A SU VEZ LLAMA AL GLOBAL
+    // EXCEPTION HANDLER ///
+
     @PostMapping("/register")
-    public ResponseEntity<String> registerOffer(@RequestBody OfferDTO offerDTO) {
-        offerService.registerOffer(offerDTO); // Pasamos el DTO al servicio
-        return ResponseEntity.ok("\n    User registered successfully");
+    public ResponseEntity<Map<String, Object>> registerOffer(@RequestBody OfferDTO offerDTO) {
+        Offer registeredOffer = offerService.registerOffer(offerDTO); // Pasamos el DTO al servicio
+        Map<String, Object> response = new HashMap<>();
+        response.put("MESSAGE", "Offer registered successfully for user: " + offerDTO.getUserId());
+        response.put("offer", registeredOffer);
+        return ResponseEntity.ok(response);
     }
 
 

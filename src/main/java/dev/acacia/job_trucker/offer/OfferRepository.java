@@ -17,9 +17,11 @@ public interface OfferRepository extends JpaRepository<Offer, Long> {
     /* @Query("SELECT o FROM Offer o WHERE o.summary LIKE %:keyword% OR o.requirements LIKE %:keyword%")
     Optional<List<Offer>> findOfferByKeyword(@Param("keyword") String keyword); */
 
-    @Modifying
+/*     @Modifying
     @Query("UPDATE Offer off SET off.offStep = :offStep WHERE off.id = :id")
     int updateOfferStep(@Param("id") long id, @Param("offStep") OffStep offStep);
+ */
+    // boolean existsByUserId(long userId);
 }
 
 /* 

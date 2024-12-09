@@ -47,26 +47,26 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-    return new UserDetailsService() {
-        @Override
-        public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-            // Definimos dos usuarios: uno con el rol USER y otro con el rol ADMIN
-            if (username.equals("xanina")) {
-                return User.withUsername("xanina")
-                        .password(passwordEncoder().encode("1234Auth"))
-                        .roles("USER") // Rol USER
-                        .build();
-            } else if (username.equals("admin")) {
-                return User.withUsername("admin")
-                        .password(passwordEncoder().encode("adminPass"))
-                        .roles("ADMIN") // Rol ADMIN
-                        .build();
-            } else {
-                throw new UsernameNotFoundException("User not found");
+        return new UserDetailsService() {
+            @Override
+            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+                // Definimos dos usuarios: uno con el rol USER y otro con el rol ADMIN
+                if (username.equals("xanina")) {
+                    return User.withUsername("xanina")
+                            .password(passwordEncoder().encode("1234Auth"))
+                            .roles("USER") // Rol USER
+                            .build();
+                } else if (username.equals("admin")) {
+                    return User.withUsername("admin")
+                            .password(passwordEncoder().encode("adminPass"))
+                            .roles("ADMIN") // Rol ADMIN
+                            .build();
+                } else {
+                    throw new UsernameNotFoundException("User not found");
+                }
             }
-        }
-    };
-}
+        };
+    }
 
 
     // Configuración del encoder de contraseñas
