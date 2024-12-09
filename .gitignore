@@ -6,8 +6,8 @@ target/
 .mvn/
 mvnw
 mvnw.cmd
-.logs/
-*.log*
+logs/
+bin/
 
 ### STS ###
 .apt_generated
