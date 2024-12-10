@@ -32,7 +32,7 @@ public class UserController {
     // EL MANEJO DE ERRORES LO HAGO DESDE EL SERVICE, QUE A SU VEZ LLAMA AL GLOBAL
     // EXCEPTION HANDLER ///
 
-    @PostMapping("/register")  // acceso público, siempre ROL USER
+    @PostMapping("/register") // acceso público, siempre ROL USER
     public ResponseEntity<Map<String, Object>> registerUser(@RequestBody UserDTO userDTO) {
         User registeredUser = userService.registerUser(userDTO); // Pasamos el DTO al servicio
         Map<String, Object> response = new HashMap<>();
@@ -65,14 +65,14 @@ public class UserController {
     @PatchMapping("/user/update/{id}")
     public ResponseEntity<Map<String, Object>> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
         User updatedUser = userService.updateUser(id, userDTO); // Pasamos el ID y el DTO al servicio y el resultado lo
-                                                               // guardamos en updateUser
+                                                                // guardamos en updateUser
         Map<String, Object> response = new HashMap<>();
         response.put("MESSAGE", "User updated successfully");
         response.put("user", updatedUser);
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/user/delete/{id}")
+    @DeleteMapping("/admin/delete/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id); // Pasamos el ID al servicio
         return ResponseEntity.ok("\n    User deleted successfully");

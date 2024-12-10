@@ -14,5 +14,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT user FROM User user WHERE user.id = :id AND user.userEmail = :userEmail AND user.userHashPass = :userHashPass")
     Optional<User> loginByuserIdAnduserEmailAnduserHashPass(@Param("id") Long id, @Param("userEmail") String userEmail, @Param("userHashPass") String userHashPass);
 
+    Optional<User> findByUserEmail(String userEmail);  // lo usa offerService para identificar el user logado
+
 }
 // OJO, en los nombres de los métodos en el repositorio han de llevar el mismo nombre que en las columnas de la entidad //// 

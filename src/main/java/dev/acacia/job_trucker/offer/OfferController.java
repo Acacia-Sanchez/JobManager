@@ -1,11 +1,14 @@
 package dev.acacia.job_trucker.offer;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.aspectj.internal.lang.annotation.ajcDeclareAnnotation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,8 +37,17 @@ public class OfferController {
     // EXCEPTION HANDLER ///
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, Object>> registerOffer(@RequestBody OfferDTO offerDTO) {
-        Offer registeredOffer = offerService.registerOffer(offerDTO); // Pasamos el DTO al servicio
+    public ResponseEntity<Map<String, Object>> registerOffer(@RequestBody OfferDTO offerDTO, Principal principal) {
+if (principal != null) {
+    String email = principal.getName();
+    System.out.println("xana Authenticated user: " + email); // Aquí deberías ver el nombre del usuario
+} else {
+    System.out.println("xana Principal is null, user not authenticated.");
+}
+// Agrega un log para verificar el valor
+System.out.println("xana Authenticated principal name: " + principal.getName());
+
+        Offer registeredOffer = offerService.registerOffer(offerDTO, principal); // Pasamos el DTO al servicio
         Map<String, Object> response = new HashMap<>();
         response.put("MESSAGE", "Offer registered successfully for user: " + offerDTO.getUserId());
         response.put("offer", registeredOffer);

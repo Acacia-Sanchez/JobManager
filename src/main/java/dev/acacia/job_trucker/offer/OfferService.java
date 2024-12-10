@@ -1,6 +1,9 @@
 package dev.acacia.job_trucker.offer;
 
+import java.security.Principal;
+
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -18,15 +21,20 @@ public class OfferService {
         this.userRepository = userRepository;
     }
 
-    public Offer registerOffer(OfferDTO offerDTO) {
+    public Offer registerOffer(OfferDTO offerDTO, Principal principal) {
 
-                    // Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                    // System.out.println("Authenticated user: " + authentication.getName());
+        // Long userId = offerDTO.getUserId(); // así, se le pasa el userId por postman, cuando funcione hay que hacer que lo coja del user logueado
 
-        Long userId = offerDTO.getUserId(); // así, se le pasa el userId por postman, cuando funcione hay que hacer que lo coja del user logueado
+        //userEmail = principal.getName(); // Obtenemos el nombre del usuario autenticado
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        if (principal == null) {
+            throw new RuntimeException("bb Usuario no autenticado");  // aquí no entra!!!!!!!!!!!
+        }
+
+        User user = userRepository.findByUserEmail(principal.getName())
+                .orElseThrow(() -> new RuntimeException("bb User not found with Email: " + principal.getName()));
+
+        Long userId = user.getId(); // Ahora tienes el ID del usuario
 
         Offer offer = new Offer(
             offerDTO.getOffCompanyName(),

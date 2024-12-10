@@ -36,7 +36,8 @@ public class SecurityConfig {
             
             .authorizeHttpRequests(authz -> authz  // Qué puntos de entrada pueden acceder sin autenticación y cuales no
                             .requestMatchers("/api/admin/**").hasRole("ADMIN")  // Solo para admin (para los Get users)
-                            .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")  // además admin puede tb a todo lo de user
+                            .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
+                            .requestMatchers("/api/offer/**").hasAnyRole("USER", "ADMIN")
                             .requestMatchers("/api/register").permitAll()  // Permitir el acceso sin autenticación al registro
                             .anyRequest().authenticated()  // Requiere autenticación para otras rutas
             )
@@ -51,13 +52,13 @@ public class SecurityConfig {
             @Override
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
                 // Definimos dos usuarios: uno con el rol USER y otro con el rol ADMIN
-                if (username.equals("xanina")) {
-                    return User.withUsername("xanina")
+                if (username.equals("xanina@gmail.com")) {
+                    return User.withUsername("xanina@gmail.com")  // usar el email como nombre de usuario
                             .password(passwordEncoder().encode("1234Auth"))
                             .roles("USER") // Rol USER
                             .build();
-                } else if (username.equals("admin")) {
-                    return User.withUsername("admin")
+                } else if (username.equals("admin@gmail.com")) {
+                    return User.withUsername("admin@gmail.com")
                             .password(passwordEncoder().encode("adminPass"))
                             .roles("ADMIN") // Rol ADMIN
                             .build();
