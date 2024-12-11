@@ -87,19 +87,6 @@ private static final Logger logger = LoggerFactory.getLogger(UserController.clas
         return ResponseEntity.ok("\n    User deleted successfully");
     }
 
-
-
-
-/*     @PostMapping("/user/login/{id}")
-    public ResponseEntity<String> login(@PathVariable Long id, @RequestBody LoginDTO loginDTO) {
-        boolean success = userService.login(id, loginDTO.getUserEmail(), loginDTO.getUserHashPass());
-        if (success) {
-            return ResponseEntity.ok("\n   User logged in successfully");
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("\n   boubaca ERROR 401: UNAUTHORIZED. Email or Password isn't correct for this id");
-    } */
-
     @PostMapping("/user/login")
     public ResponseEntity<String> login(Authentication authentication) {
         String email = authentication.getName();

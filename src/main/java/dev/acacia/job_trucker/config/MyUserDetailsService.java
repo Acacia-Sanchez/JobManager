@@ -15,7 +15,6 @@ import dev.acacia.job_trucker.user.User;
 import dev.acacia.job_trucker.user.UserPrincipal;
 import dev.acacia.job_trucker.user.UserRepository;
 
-
 @Service
 public class MyUserDetailsService implements UserDetailsService {
 

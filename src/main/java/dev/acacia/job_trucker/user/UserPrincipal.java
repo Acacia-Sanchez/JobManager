@@ -17,11 +17,6 @@ public class UserPrincipal implements UserDetails {
         this.user = user;
     }
 
-/*     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("USER"));
-    } */
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // Devolver solo el rol del usuario con el prefijo "ROLE_"
