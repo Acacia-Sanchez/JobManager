@@ -3,8 +3,6 @@ package dev.acacia.job_trucker.user;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,8 +19,6 @@ public class UserService {
 
     private UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
-    private static final Logger logger = LoggerFactory.getLogger(UserService.class);  // muestra logs de errores de UserService
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -152,18 +148,28 @@ public class UserService {
         }
 
 
-        // PARA MODIFICAR EL ROL /////
-        
-            // Verificar si el usuario autenticado tiene permisos para modificar roles
+            // PARA MODIFICAR EL ROL ////////
+
+            // Verificar si el usuario autenticado está disponible
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            throw new AccessDeniedException("YOUR ROLE IS NOT ADMIN. You are not allowed to modify another user's role.");
+        if (authentication == null) {
+            throw new AccessDeniedException("You are not authenticated. Please log in.");
         }
 
-        // Si el admin intenta modificar el rol, hacerlo solo si el role no es null
+        // Permitir la modificación de cualquier campo excepto userRole
         if (userDTO.getUserRole() != null) {
-            UserRole newRole = userDTO.getUserRole();   
-            user.setUserRole(newRole); // cambia el rol del usuario
+            // Si el campo userRole no es nulo, verificar si el usuario es admin
+            boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+
+            if (!isAdmin) {
+                // Si no es admin, lanzar una excepción indicando que no puede modificar el rol
+                throw new AccessDeniedException("Only an admin can modify the user's role.");
+            }
+
+            // Si es admin, permitir modificar el campo userRole
+            UserRole newRole = userDTO.getUserRole();
+            user.setUserRole(newRole);
         }
 
         // Guardar el usuario actualizado en el repositorio

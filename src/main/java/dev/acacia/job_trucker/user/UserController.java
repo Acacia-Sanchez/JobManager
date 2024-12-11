@@ -4,12 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-// import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties.Authentication;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,8 +25,6 @@ import jakarta.servlet.http.HttpServletResponse;
 public class UserController {
 
     private UserService userService;
-    
-private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -48,6 +42,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserController.clas
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/admin/register") // solo el admin puede elegir entre generar ADMIN o USER
     public ResponseEntity<Map<String, Object>> registerUserWithRole(@RequestBody UserDTO userDTO) {
         User registeredUserWithRole = userService.registerUserWithRole(userDTO); // Pasamos el DTO al servicio
@@ -57,21 +52,22 @@ private static final Logger logger = LoggerFactory.getLogger(UserController.clas
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin/get/{id}") // solo el admin puede ver los users
     public ResponseEntity<User> getUser(@PathVariable Long id) {
         User user = userService.getUser(id); // Pasamos el ID al servicio
         return ResponseEntity.ok(user);
     }
 
-    @GetMapping("/admin/getAll") // solo el admin puede ver los users
     @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin/getAll") // solo el admin puede ver los users
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers(); // Llamamos al servicio
         return ResponseEntity.ok(users);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PatchMapping("/user/update/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
         User updatedUser = userService.updateUser(id, userDTO); // Pasamos el ID y el DTO al servicio y el resultado lo
                                                                 // guardamos en updateUser
@@ -81,23 +77,24 @@ private static final Logger logger = LoggerFactory.getLogger(UserController.clas
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/admin/delete/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id); // Pasamos el ID al servicio
         return ResponseEntity.ok("\n    User deleted successfully");
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/user/login")
     public ResponseEntity<String> login(Authentication authentication) {
         String email = authentication.getName();
-
         return ResponseEntity.ok("\n   User logged in successfully");
     }
     
 
 
 
-    
+    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/user/logout")
     public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
         // Spring Security eliminar la sesión activa HTTP en el servidor

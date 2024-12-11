@@ -16,8 +16,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import dev.acacia.job_trucker.exceptions.GlobalExceptionHandler;
-import dev.acacia.job_trucker.exceptions.GlobalExceptionHandler.NoUsersFoundException;
-
+import dev.acacia.job_trucker.exceptions.GlobalExceptionHandler.EmailAlreadyExistsException;
+import dev.acacia.job_trucker.exceptions.GlobalExceptionHandler.UserNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -42,85 +42,131 @@ public class UserServiceTest {
         user.setUserAddress("Ruedes, Gijòn");
         user.setUserPhone("627909745");
         user.setUserHashPass("1234Pass");
-//        user.setUserRole("USER");
     }
-
-    
-    @Test
-    void testDeleteUserWhenUserExists() {
-        when(userRepository.existsById(user.getId())).thenReturn(true);
-
-        userService.deleteUser(user.getId());
-        verify(userRepository, times(1)).existsById(user.getId());
-        verify(userRepository, times(1)).deleteById(user.getId());
-    }
-    @Test
-    void testDeleteUserWhenUserNotExists() {
-        when(userRepository.existsById(user.getId())).thenReturn(false);
-
-        assertThrows(GlobalExceptionHandler.UserNotFoundException.class, () -> userService.deleteUser(user.getId()));
-        verify(userRepository, times(1)).existsById(user.getId());
-        verify(userRepository, never()).deleteById(user.getId());
-    }
-
 
     @Test
-    void testGetAllUsers() {
-        List<User> users = Arrays.asList(
-//            new User("acacia", "dirección aca", "6274 909 745", "1234pass", "aca@gmail.com", "ADMIN"),
-            // new User("bouba", "dirección bb", "722683424", "4567pass", "bouba@gmail.com", "USER")
-        );
-        when(userRepository.findAll()).thenReturn(users);
+    public void testRegisterUser_EmailAlreadyExists_ThrowsEmailAlreadyExistsException() {
+        // Configuración
+        UserDTO userDTO = new UserDTO();
+        when(userRepository.existsByUserEmail(userDTO.getUserEmail())).thenReturn(true);
 
-        List<User> result = userService.getAllUsers();
-        assertEquals(2, result.size());
+        // Ejecución
+        try {
+            userService.registerUser(userDTO);
+            fail("Debería haber lanzado una EmailAlreadyExistsException");
+        } catch (EmailAlreadyExistsException e) {
+            // Verificación
+            assertEquals("\n   ERROR: The email address is already in use. Please choose another one.", e.getMessage());
+        }
     }
 
+    @Test
+    public void testRegisterUser_RolUser_RegistraUsuario() {
+        // Configuración
+        UserDTO userDTO = new UserDTO();
+        when(passwordEncoder.encode(userDTO.getUserHashPass())).thenReturn("passwordEncriptado");
+
+        // Ejecución
+        User user = userService.registerUser(userDTO);
+
+        // Verificación
+        assertNotNull(user);
+        assertEquals(userDTO.getUserName(), user.getUserName());
+        assertEquals(userDTO.getUserAddress(), user.getUserAddress());
+        assertEquals(userDTO.getUserPhone(), user.getUserPhone());
+        assertEquals("passwordEncriptado", user.getUserHashPass());
+        assertEquals(userDTO.getUserEmail(), user.getUserEmail());
+        assertEquals(UserRole.USER, user.getUserRole());
+        verify(userRepository, times(1)).save(user);
+    }
 
     @Test
     void testGetUser() {
+        // Arrange
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(userRepository.existsById(user.getId())).thenReturn(true);
 
+        // Act
+        User result = userService.getUser(user.getId());
+
+        // Assert
+        assertEquals(user, result);
     }
 
     @Test
-    void testLogin() {
-        when(userRepository.loginByuserIdAnduserEmailAnduserHashPass(user.getId(), user.getUserEmail(), user.getUserHashPass()))
-            .thenReturn(Optional.of(user));  // usuario con las credenciales correctas
-        
-        boolean result = userService.login(user.getId(), user.getUserEmail(), user.getUserHashPass());
-        assertTrue(result);
+    void testGetUser_ThrowsUserNotFoundException() {
+        // Arrange
+
+        // Act and Assert
+        assertThrows(GlobalExceptionHandler.UserNotFoundException.class, () -> userService.getUser(user.getId()));
     }
-/* 
-    public boolean login(Long id, String userEmail, String userHashPass) {
-        if (id == null || !userRepository.existsById(id)) {
-            throw new GlobalExceptionHandler.UserNotFoundException();
+
+    @Test
+    void testGetAllUsers() {
+        // Arrange
+        List<User> users = Arrays.asList(user);
+        when(userRepository.findAll()).thenReturn(users);
+
+        // Act
+        List<User> result = userService.getAllUsers();
+
+        // Assert
+        assertEquals(users, result);
+    }
+
+    @Test
+    void testGetAllUsers_ThrowsNoUsersFoundException() {
+        // Arrange
+        when(userRepository.findAll()).thenReturn(List.of());
+
+        // Act and Assert
+        assertThrows(GlobalExceptionHandler.NoUsersFoundException.class, () -> userService.getAllUsers());
+    }
+
+    @Test
+    public void testDeleteUser_UsuarioNoExiste_ThrowsUserNotFoundException() {
+        // Configuración
+        Long id = 1L;
+        when(userRepository.existsById(id)).thenReturn(false);
+
+        // Ejecución
+        try {
+            userService.deleteUser(id);
+            fail("Debería haber lanzado una UserNotFoundException");
+        } catch (UserNotFoundException e) {
+            // Verificación
+            assertEquals("\n      ERROR 404: User not found", e.getMessage());
         }
-        
-        // le paso userEmail y userHashPass al metodo del repository y lo que devuelve el método se guarda en el objeto user
-        Optional<User> user = userRepository.loginByuserIdAnduserEmailAnduserHashPass(id, userEmail, userHashPass);
-        if (user.isPresent()) {  
-            logger.info("\n   Login successful for user: {}", userEmail);
-            return true;
-        }
-    
-        logger.warn("\n   Login failed for user: {}", userEmail);
-        return false;
-    }
-    
- */
-    @Test
-    void testLogout() {
-        when(!userRepository.existsById(user.getId())).thenReturn(false);
-        assertThrows(GlobalExceptionHandler.UserNotFoundException.class, () -> userService.logout(user.getId(), user.getUserEmail()));
     }
 
     @Test
-    void testRegisterUser() {
+    public void testDeleteUser_UsuarioExiste_BorraUsuario() {
+        // Configuración
+        Long id = 1L;
+        User user = new User("nombre", "dirección", "telefono", "password", "email@example.com", UserRole.USER);
+        when(userRepository.existsById(id)).thenReturn(true);
 
+        // Ejecución
+        userService.deleteUser(id);
+
+        // Verificación
+        verify(userRepository, times(1)).deleteById(id);
     }
 
     @Test
-    void testUpdateUser() {
+    public void testUpdateUser_ThrowsUserNotFoundException() {
+        // Arrange
+        UserDTO userDTO = new UserDTO();
 
+        // Act and Assert
+        assertThrows(GlobalExceptionHandler.UserNotFoundException.class,
+                () -> userService.updateUser(user.getId(), userDTO));
+    }
+
+    @Test
+    void testLogin_ThrowsUserNotFoundException() {
+        // Act and Assert
+        assertThrows(GlobalExceptionHandler.UserNotFoundException.class,
+                () -> userService.login(user.getId(), user.getUserEmail(), user.getUserHashPass()));
     }
 }
