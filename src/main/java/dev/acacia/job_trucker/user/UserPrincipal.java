@@ -2,6 +2,7 @@ package dev.acacia.job_trucker.user;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,11 +17,17 @@ public class UserPrincipal implements UserDetails {
         this.user = user;
     }
 
-    @Override
+/*     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority("USER"));
-    }
+    } */
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Devolver solo el rol del usuario con el prefijo "ROLE_"
+    return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + user.getUserRole().name()));
+    }
+    
     @Override
     public String getPassword() {
         return user.getUserHashPass();

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 // import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties.Authentication;
 import org.springframework.http.HttpStatus;
@@ -63,12 +64,14 @@ private static final Logger logger = LoggerFactory.getLogger(UserController.clas
     }
 
     @GetMapping("/admin/getAll") // solo el admin puede ver los users
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers(); // Llamamos al servicio
         return ResponseEntity.ok(users);
     }
 
     @PatchMapping("/user/update/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
         User updatedUser = userService.updateUser(id, userDTO); // Pasamos el ID y el DTO al servicio y el resultado lo
                                                                 // guardamos en updateUser

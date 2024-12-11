@@ -176,13 +176,11 @@ public class UserService {
         if (id == null || !userRepository.existsById(id)) {
             throw new GlobalExceptionHandler.UserNotFoundException();
         }
-        
         // le paso userEmail y userHashPass al metodo del repository y lo que devuelve el método se guarda en el objeto user
         Optional<User> user = userRepository.loginByuserIdAnduserEmailAnduserHashPass(id, userEmail, userHashPass);
         if (user.isPresent()) {  
             return true;
         }
-    
         return false;
     }
     

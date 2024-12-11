@@ -53,10 +53,10 @@ public class SecurityConfig {
                 .authenticationEntryPoint(authenticationEntryPoint))
             
             .authorizeHttpRequests(authz -> authz  // Qué puntos de entrada pueden acceder sin autenticación y cuales no
-                            // .requestMatchers("/api/admin/**").hasRole("ADMIN")  // Solo para admin (para los Get users)
-                            // .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
-                            // .requestMatchers("/api/offer/**").hasAnyRole("USER", "ADMIN")
-                            .requestMatchers("/api/register/**").permitAll()  // Permitir el acceso sin autenticación al registro
+                            .requestMatchers("/api/admin/**").hasRole("ADMIN")  // Solo para admin (para Get y Delete endpoints)   
+                            .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
+                            .requestMatchers("/api/offer/**").hasAnyRole("USER", "ADMIN")
+                            .requestMatchers("/api/register").permitAll()  // Permite el acceso sin autenticación al registro
                             .anyRequest().authenticated()  // Requiere autenticación para otras rutas
             )
             .httpBasic(withDefaults());  // usar autenticación básica
