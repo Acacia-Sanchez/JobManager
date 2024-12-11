@@ -4,6 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+// import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -24,6 +28,8 @@ import jakarta.servlet.http.HttpServletResponse;
 public class UserController {
 
     private UserService userService;
+    
+private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -78,16 +84,30 @@ public class UserController {
         return ResponseEntity.ok("\n    User deleted successfully");
     }
 
-    @PostMapping("/user/login/{id}")
+
+
+
+/*     @PostMapping("/user/login/{id}")
     public ResponseEntity<String> login(@PathVariable Long id, @RequestBody LoginDTO loginDTO) {
         boolean success = userService.login(id, loginDTO.getUserEmail(), loginDTO.getUserHashPass());
         if (success) {
             return ResponseEntity.ok("\n   User logged in successfully");
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("\n   ERROR 401: UNAUTHORIZED. Email or Password isn't correct for this id");
-    }
+                .body("\n   boubaca ERROR 401: UNAUTHORIZED. Email or Password isn't correct for this id");
+    } */
 
+    @PostMapping("/user/login")
+    public ResponseEntity<String> login(Authentication authentication) {
+        String email = authentication.getName();
+
+        return ResponseEntity.ok("\n   User logged in successfully");
+    }
+    
+
+
+
+    
     @DeleteMapping("/user/logout")
     public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
         // Spring Security eliminar la sesión activa HTTP en el servidor

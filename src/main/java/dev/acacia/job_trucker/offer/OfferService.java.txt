@@ -31,8 +31,8 @@ public class OfferService {
             throw new RuntimeException("bb Usuario no autenticado");  // aquí no entra!!!!!!!!!!!
         }
 
-        User user = userRepository.findByUserEmail(principal.getName())
-                .orElseThrow(() -> new RuntimeException("bb User not found with Email: " + principal.getName()));
+        User user = userRepository.findByUserEmail(principal.getName());
+             ///   .orElseThrow(() -> new RuntimeException("bb User not found with Email: " + principal.getName()));
 
         Long userId = user.getId(); // Ahora tienes el ID del usuario
 

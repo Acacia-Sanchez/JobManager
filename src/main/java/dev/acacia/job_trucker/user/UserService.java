@@ -180,11 +180,9 @@ public class UserService {
         // le paso userEmail y userHashPass al metodo del repository y lo que devuelve el método se guarda en el objeto user
         Optional<User> user = userRepository.loginByuserIdAnduserEmailAnduserHashPass(id, userEmail, userHashPass);
         if (user.isPresent()) {  
-            logger.info("\n   Login successful for user: {}", userEmail);
             return true;
         }
     
-        logger.warn("\n   Login failed for user: {}", userEmail);
         return false;
     }
     
