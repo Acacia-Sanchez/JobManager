@@ -40,19 +40,16 @@ public class OfferController {
     // EXCEPTION HANDLER ///
 
     @PostMapping("/register")
-    //public ResponseEntity<Map<String, Object>> registerOffer(@RequestBody OfferDTO offerDTO, Principal principal) {
     public ResponseEntity<Map<String, Object>> registerOffer(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody OfferDTO offerDTO) {
 
         if (userPrincipal == null) {
             // Handle the case where the user is null
-            // You can return an error response or throw an exception
             return ResponseEntity.badRequest().body(Collections.singletonMap("ERROR 400:", "User is not authenticated"));
         }
         
-        //Offer registeredOffer = offerService.registerOffer(offerDTO); // Pasamos el DTO al servicio
         Offer registeredOffer = offerService.registerOffer(userPrincipal.getUser().getId(), offerDTO);
         Map<String, Object> response = new HashMap<>();
-        response.put("MESSAGE", "Offer registered successfully for user: " + offerDTO.getUserId());
+        response.put("MESSAGE", "Offer registered successfully for user: " + userPrincipal.getUser().getId());
         response.put("offer", registeredOffer);
         return ResponseEntity.ok(response);
     }
