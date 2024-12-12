@@ -54,5 +54,10 @@ public class OfferController {
         return ResponseEntity.ok(response);
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteOffer(@PathVariable Long id) {
+        offerService.deleteOffer(id); // Pasamos el ID al servicio
+        return ResponseEntity.ok("\n    Offer number " + id + " deleted successfully");
+    }
 
 }
