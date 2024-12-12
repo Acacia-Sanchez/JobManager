@@ -26,8 +26,9 @@ public class OfferService {
         this.userRepository = userRepository;
     }
 
-    public Offer registerOffer(OfferDTO offerDTO) {
-        User user = userRepository.findById(offerDTO.getUserId()).orElse(null);
+    // public Offer registerOffer(OfferDTO offerDTO) {
+    public Offer registerOffer(Long userId, OfferDTO offerDTO) {
+        User user = userRepository.findById(userId).orElse(null);
         if (user != null) {
             Offer offer = new Offer();
                 offer.setOffCompanyName(offerDTO.getOffCompanyName());
@@ -45,13 +46,14 @@ public class OfferService {
                 offer.setOffFavourite(offerDTO.isOffFavourite());
                 offer.setOffStep(offerDTO.getOffStep());
 
-                User userWithIdOnly = new User();
-                userWithIdOnly.setId(user.getId());
-                offer.setUser(userWithIdOnly);
 
-                offerRepository.save(offer);
-
-                // offer.setUser(user); // Guarda el objeto User completo
+                // User userWithIdOnly = new User();
+                // userWithIdOnly.setId(userId);
+                // offer.setUser(userWithIdOnly);
+                
+                offer.setUser(user); // Guarda el objeto User completo
+            
+            offerRepository.save(offer);
             return offer;
         } else {
             throw new UserNotFoundException();

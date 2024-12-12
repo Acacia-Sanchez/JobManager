@@ -1,6 +1,7 @@
 package dev.acacia.job_trucker.offer;
 
 import java.security.Principal;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import dev.acacia.job_trucker.user.User;
 import dev.acacia.job_trucker.user.UserDTO;
+import dev.acacia.job_trucker.user.UserPrincipal;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -37,16 +40,17 @@ public class OfferController {
     // EXCEPTION HANDLER ///
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, Object>> registerOffer(@RequestBody OfferDTO offerDTO, Principal principal) {
+    //public ResponseEntity<Map<String, Object>> registerOffer(@RequestBody OfferDTO offerDTO, Principal principal) {
+    public ResponseEntity<Map<String, Object>> registerOffer(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody OfferDTO offerDTO) {
 
-    /* if (principal != null) {
-        String email = principal.getName();
-    } else {
-        System.out.println("xana Principal is null, user not authenticated.");
-    } */
-
-        //Offer registeredOffer = offerService.registerOffer(offerDTO, principal); // Pasamos el DTO al servicio
-        Offer registeredOffer = offerService.registerOffer(offerDTO); // Pasamos el DTO al servicio
+        if (userPrincipal == null) {
+            // Handle the case where the user is null
+            // You can return an error response or throw an exception
+            return ResponseEntity.badRequest().body(Collections.singletonMap("ERROR 400:", "User is not authenticated"));
+        }
+        
+        //Offer registeredOffer = offerService.registerOffer(offerDTO); // Pasamos el DTO al servicio
+        Offer registeredOffer = offerService.registerOffer(userPrincipal.getUser().getId(), offerDTO);
         Map<String, Object> response = new HashMap<>();
         response.put("MESSAGE", "Offer registered successfully for user: " + offerDTO.getUserId());
         response.put("offer", registeredOffer);
