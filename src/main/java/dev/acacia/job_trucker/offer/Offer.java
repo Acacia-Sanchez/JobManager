@@ -1,6 +1,9 @@
 package dev.acacia.job_trucker.offer;
 
 import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import dev.acacia.job_trucker.user.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -30,8 +33,9 @@ public class Offer {
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")  // userId como FK
+    @JsonIgnore  // para que no serialize el user (que no guarde el user en la bbdd de offers)
     private User user;
-
+    
     public Offer(String offCompanyName, String offContactName, String offContactPhone, String offContactEmail,
             String offJobAddress, String offLink, String offSummary, String offRequirements, String offQuestions,
             String offStepComments, LocalDate offDate, LocalDate offStepDate, boolean offFavourite, OffStep offStep,
@@ -183,5 +187,5 @@ public class Offer {
     public void setUser(User user) {
         this.user = user;
     }
-
+    
 }

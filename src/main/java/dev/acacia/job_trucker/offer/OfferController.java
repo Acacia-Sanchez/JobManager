@@ -38,16 +38,15 @@ public class OfferController {
 
     @PostMapping("/register")
     public ResponseEntity<Map<String, Object>> registerOffer(@RequestBody OfferDTO offerDTO, Principal principal) {
-if (principal != null) {
-    String email = principal.getName();
-    System.out.println("xana Authenticated user: " + email); // Aquí deberías ver el nombre del usuario
-} else {
-    System.out.println("xana Principal is null, user not authenticated.");
-}
-// Agrega un log para verificar el valor
-System.out.println("xana Authenticated principal name: " + principal.getName());
 
-        Offer registeredOffer = offerService.registerOffer(offerDTO, principal); // Pasamos el DTO al servicio
+    /* if (principal != null) {
+        String email = principal.getName();
+    } else {
+        System.out.println("xana Principal is null, user not authenticated.");
+    } */
+
+        //Offer registeredOffer = offerService.registerOffer(offerDTO, principal); // Pasamos el DTO al servicio
+        Offer registeredOffer = offerService.registerOffer(offerDTO); // Pasamos el DTO al servicio
         Map<String, Object> response = new HashMap<>();
         response.put("MESSAGE", "Offer registered successfully for user: " + offerDTO.getUserId());
         response.put("offer", registeredOffer);
