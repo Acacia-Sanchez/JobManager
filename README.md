@@ -51,3 +51,7 @@ usuario.
 * Visual Studio Code
 * Jira
 * Gamma
+
+[LINK UML](https://drive.google.com/file/d/1r5ot_e8SDfBdh-4EkDIhVGnqu6gPBv3E/view?usp=sharing)
+
+[PRESENTACIÓN PROYECTO](https://gamma.app/docs/Job-Trucker-j317b1hzp92ezbs)
