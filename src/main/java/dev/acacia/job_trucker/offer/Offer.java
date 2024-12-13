@@ -1,9 +1,7 @@
 package dev.acacia.job_trucker.offer;
 
 import java.time.LocalDate;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import dev.acacia.job_trucker.user.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -28,12 +26,12 @@ public class Offer {
     private LocalDate offDate, offStepDate;
     private boolean offFavourite;
 
-    @Enumerated(EnumType.STRING)  // valor del enum se guarda como cadena en la base de datos
-    private OffStep offStep;  // llama a la clase OffStep (necesaria por ser un ENUM)
+    @Enumerated(EnumType.STRING)  
+    private OffStep offStep;  
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")  // userId como FK
-    @JsonIgnore  // para que no serialize el user (que no guarde el user en la bbdd de offers)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")  
+    @JsonIgnore 
     private User user;
     
     public Offer(String offCompanyName, String offContactName, String offContactPhone, String offContactEmail,

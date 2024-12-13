@@ -1,29 +1,21 @@
 package dev.acacia.job_trucker.user;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.Arrays;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
-
 import dev.acacia.job_trucker.offer.Offer;
 
 public class UserTest {
 
-    UserRole userRole = UserRole.USER; // Assuming UserRole is an enum
+    UserRole userRole = UserRole.USER; 
 
     @Test
     public void testGetOffers_ReturnsOffers_WhenOffersAreSet() {
-        // Configuración
         User user = new User();
         List<Offer> offers = Arrays.asList(new Offer(), new Offer());
         user.setOffers(offers);
-
-        // Ejecución
         List<Offer> retrievedOffers = user.getOffers();
-
-        // Verificación
         assertNotNull(retrievedOffers);
         assertEquals(2, retrievedOffers.size());
         assertEquals(offers, retrievedOffers);
@@ -31,14 +23,9 @@ public class UserTest {
 
     @Test
     public void testSetOffers_SetsOffersCorrectly() {
-        // Configuración
         User user = new User();
         List<Offer> offers = Arrays.asList(new Offer(), new Offer());
-
-        // Ejecución
         user.setOffers(offers);
-
-        // Verificación
         assertNotNull(user.getOffers());
         assertEquals(2, user.getOffers().size());
         assertEquals(offers, user.getOffers());
@@ -46,13 +33,8 @@ public class UserTest {
 
     @Test
     public void testSetOffers_NullList_DoesNotThrowException() {
-        // Configuración
         User user = new User();
-
-        // Ejecución
         user.setOffers(null);
-
-        // Verificación
         assertNull(user.getOffers());
     }
 

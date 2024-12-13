@@ -2,7 +2,6 @@ package dev.acacia.job_trucker.offer;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.time.LocalDate;
 
 public class OfferDTOTest {
@@ -14,7 +13,6 @@ public class OfferDTOTest {
                 "Job Address", "https://example.com", "Summary", "Requirements", "Questions", "Comments",
                 LocalDate.now(), LocalDate.now(), true, OffStep.CANDIDATURA_RECHAZADA, 1L
         );
-
         assertEquals("Company Name", offerDTO.getOffCompanyName());
         assertEquals("Contact Name", offerDTO.getOffContactName());
         assertEquals("123456789", offerDTO.getOffContactPhone());

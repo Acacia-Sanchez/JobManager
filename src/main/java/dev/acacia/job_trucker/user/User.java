@@ -1,7 +1,6 @@
 package dev.acacia.job_trucker.user;
 
 import java.util.List;
-
 import dev.acacia.job_trucker.offer.Offer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,15 +19,11 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
     private String userName, userAddress, userPhone, userHashPass;
-    
-    @Enumerated(EnumType.STRING)  // valor del enum se guarda como cadena en la base de datos
-    private UserRole userRole;  // llama a la clase UserRole (necesaria por ser un ENUM)
- 
+    @Enumerated(EnumType.STRING)  
+    private UserRole userRole; 
     @Column(name = "user_email", unique = true)
     private String userEmail;
-    
     @OneToMany(mappedBy = "user")
     private List<Offer> offers;
  
@@ -40,7 +35,6 @@ public class User {
         this.userEmail = userEmail;
         this.userRole = userRole;
     }
-
     public User () {
     
     }

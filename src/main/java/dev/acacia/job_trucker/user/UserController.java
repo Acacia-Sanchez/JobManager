@@ -7,7 +7,6 @@ import java.util.Map;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -17,25 +16,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 @RestController
 @RequestMapping("/api")
 public class UserController {
 
     private UserService userService;
-
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    // EL MANEJO DE ERRORES LO HAGO DESDE EL SERVICE, QUE A SU VEZ LLAMA AL GLOBAL
-    // EXCEPTION HANDLER ///
-
-    @PostMapping("/register") // acceso público, siempre ROL USER
+    @PostMapping("/register") 
     public ResponseEntity<Map<String, Object>> registerUser(@RequestBody UserDTO userDTO) {
-        User registeredUser = userService.registerUser(userDTO); // Pasamos el DTO al servicio
+        User registeredUser = userService.registerUser(userDTO);
         Map<String, Object> response = new HashMap<>();
         response.put("MESSAGE", "User registered successfully with role USER");
         response.put("user", registeredUser);
@@ -43,9 +35,9 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/admin/register") // solo el admin puede elegir entre generar ADMIN o USER
+    @PostMapping("/admin/register") 
     public ResponseEntity<Map<String, Object>> registerUserWithRole(@RequestBody UserDTO userDTO) {
-        User registeredUserWithRole = userService.registerUserWithRole(userDTO); // Pasamos el DTO al servicio
+        User registeredUserWithRole = userService.registerUserWithRole(userDTO);
         Map<String, Object> response = new HashMap<>();
         response.put("MESSAGE", "User registered successfully with role " + userDTO.getUserRole());
         response.put("user", registeredUserWithRole);
@@ -53,24 +45,23 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/admin/get/{id}") // solo el admin puede ver los users
+    @GetMapping("/admin/get/{id}") 
     public ResponseEntity<User> getUser(@PathVariable Long id) {
-        User user = userService.getUser(id); // Pasamos el ID al servicio
+        User user = userService.getUser(id);
         return ResponseEntity.ok(user);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/admin/getAll") // solo el admin puede ver los users
+    @GetMapping("/admin/getAll") 
     public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers(); // Llamamos al servicio
+        List<User> users = userService.getAllUsers(); 
         return ResponseEntity.ok(users);
     }
 
     @PreAuthorize("hasRole('USER')")
     @PatchMapping("/user/update/{id}")
     public ResponseEntity<Map<String, Object>> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
-        User updatedUser = userService.updateUser(id, userDTO); // Pasamos el ID y el DTO al servicio y el resultado lo
-                                                                // guardamos en updateUser
+        User updatedUser = userService.updateUser(id, userDTO); 
         Map<String, Object> response = new HashMap<>();
         response.put("MESSAGE", "User updated successfully");
         response.put("user", updatedUser);
@@ -80,7 +71,7 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/admin/delete/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id); // Pasamos el ID al servicio
+        userService.deleteUser(id); 
         return ResponseEntity.ok("\n    User deleted successfully");
     }
 
@@ -91,15 +82,4 @@ public class UserController {
         return ResponseEntity.ok("\n   User logged in successfully");
     }
     
-
-
-
-    @PreAuthorize("hasRole('USER')")
-    @DeleteMapping("/user/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
-        // Spring Security eliminar la sesión activa HTTP en el servidor
-        new SecurityContextLogoutHandler().logout(request, response, null);
-        return ResponseEntity.ok("\n   User logged out successfully");
-    }
-
 }

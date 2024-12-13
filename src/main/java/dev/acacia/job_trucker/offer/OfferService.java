@@ -1,17 +1,9 @@
 package dev.acacia.job_trucker.offer;
 
-import java.security.Principal;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import dev.acacia.job_trucker.exceptions.GlobalExceptionHandler;
-import dev.acacia.job_trucker.exceptions.GlobalExceptionHandler.NoUsersFoundException;
 import dev.acacia.job_trucker.exceptions.GlobalExceptionHandler.UserNotFoundException;
 import dev.acacia.job_trucker.user.User;
 import dev.acacia.job_trucker.user.UserPrincipal;
@@ -48,13 +40,8 @@ public class OfferService {
                 offer.setOffStepDate(offerDTO.getOffStepDate());
                 offer.setOffFavourite(offerDTO.isOffFavourite());
                 offer.setOffStep(offerDTO.getOffStep());
-                offer.setUser(user); // Guarda el objeto User completo
+                offer.setUser(user);
 
-                // User userWithIdOnly = new User();
-                // userWithIdOnly.setId(userId);
-                // offer.setUser(userWithIdOnly);
-                
-            
             offerRepository.save(offer);
             return offer;
         } else {
@@ -95,7 +82,4 @@ public class OfferService {
         }
         return offers;
     }
-
-
-
 }

@@ -7,17 +7,14 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class UserPrincipal implements UserDetails {
-// esta clase refiere al usuario actual, el que está intentando acceder / logarse
 
     private User user;
-
     public UserPrincipal(User user) {
         this.user = user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Devolver solo el rol del usuario con el prefijo "ROLE_"
     return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + user.getUserRole().name()));
     }
     
@@ -28,7 +25,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getUserEmail(); // <------
+        return user.getUserEmail();
     }
 
     @Override

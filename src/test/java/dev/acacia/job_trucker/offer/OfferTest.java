@@ -2,7 +2,6 @@ package dev.acacia.job_trucker.offer;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-
 import java.time.LocalDate;
 
 public class OfferTest {
@@ -104,53 +103,6 @@ public class OfferTest {
         offer.setOffDate(LocalDate.now());
         assertEquals(LocalDate.now(), offer.getOffDate());
     }
-/* 
-    @Test
-    public void testToString_ReturnsCorrectString() {
-        Offer offer = new Offer();
-        offer.setOffCompanyName("Empresa de prueba");
-        offer.setOffContactName("Nombre de contacto");
-        offer.setOffContactEmail("contacto@example.com");
-        offer.setOffContactPhone("987-654-3210");
-        offer.setOffSummary("Resumen de oferta");
-        offer.setOffLink("https://www.example.com");
-        offer.setOffDate(LocalDate.now());
-    
-        String expectedString = "Offer{" +
-                "offCompanyName='" + "Empresa de prueba" + '\'' +
-                ", offContactName='" + "Nombre de contacto" + '\'' +
-                ", offContactEmail='" + "contacto@example.com" + '\'' +
-                ", offContactPhone='" + "987-654-3210" + '\'' +
-                ", offSummary='" + "Resumen de oferta" + '\'' +
-                ", offLink='" + "https://www.example.com" + '\'' +
-                ", offDate=" + LocalDate.now() +
-                '}';
-    
-        assertEquals(expectedString, offer.toString());
-    } */
-    
-/*     @Test
-    public void testEquals_ReturnsTrueForEqualObjects() {
-        Offer offer1 = new Offer();
-        offer1.setOffCompanyName("Empresa de prueba");
-        offer1.setOffContactName("Nombre de contacto");
-        offer1.setOffContactEmail("contacto@example.com");
-        offer1.setOffContactPhone("987-654-3210");
-        offer1.setOffSummary("Resumen de oferta");
-        offer1.setOffLink("https://www.example.com");
-        offer1.setOffDate(LocalDate.now());
-    
-        Offer offer2 = new Offer();
-        offer2.setOffCompanyName("Empresa de prueba");
-        offer2.setOffContactName("Nombre de contacto");
-        offer2.setOffContactEmail("contacto@example.com");
-        offer2.setOffContactPhone("987-654-3210");
-        offer2.setOffSummary("Resumen de oferta");
-        offer2.setOffLink("https://www.example.com");
-        offer2.setOffDate(LocalDate.now());
-    
-        assertTrue(offer1.equals(offer2));
-    } */
     
     @Test
     public void testEquals_ReturnsFalseForDifferentObjects() {
@@ -185,8 +137,4 @@ public class OfferTest {
     
         assertNotEquals(offer1.hashCode(), offer2.hashCode());
     }
-
-
-
-
 }

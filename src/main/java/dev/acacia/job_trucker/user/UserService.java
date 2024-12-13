@@ -2,14 +2,12 @@ package dev.acacia.job_trucker.user;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import dev.acacia.job_trucker.exceptions.GlobalExceptionHandler;
 import dev.acacia.job_trucker.exceptions.GlobalExceptionHandler.EmailAlreadyExistsException;
 import dev.acacia.job_trucker.exceptions.GlobalExceptionHandler.NoUsersFoundException;
@@ -29,31 +27,22 @@ public class UserService {
     }
 
     public User registerUser(UserDTO userDTO) {
-
-            // Comprobar si email ya está registrado en la bbdd, antes de guardar el DTO en User
         if (userRepository.existsByUserEmail(userDTO.getUserEmail())) {
             throw new EmailAlreadyExistsException(
             "\n   ERROR: The email address is already in use. Please choose another one.");
         }
-
         UserRole role = userDTO.getUserRole();
-        String encodedPassword = passwordEncoder.encode(userDTO.getUserHashPass());  // Encripta el password
-        
+        String encodedPassword = passwordEncoder.encode(userDTO.getUserHashPass());  
         if (role == null) {
             role = UserRole.USER;
         }
-
-            // Si el admin está registrando un nuevo usuario y se especifica un rol
-        if (userDTO.getUserRole() != null && userDTO.getUserRole() == UserRole.ADMIN) { // Comparar con el enum directamente
-
-                // Verificar que el usuario autenticado tiene permisos de ADMIN para asignar el rol ADMIN
+        if (userDTO.getUserRole() != null && userDTO.getUserRole() == UserRole.ADMIN) { 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication == null || !authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
                 throw new AccessDeniedException("YOUR ROLE IS NOT ADMIN. Only an ADMIN can assign the ADMIN role.");
             }
-            role = UserRole.ADMIN;  // Asignamos el rol ADMIN si el usuario es ADMIN
+            role = UserRole.ADMIN; 
         }
-
         User user = new User(
                 userDTO.getUserName(),
                 userDTO.getUserAddress(),
@@ -62,25 +51,19 @@ public class UserService {
                 userDTO.getUserEmail(),
                 role);
 
-        userRepository.save(user);  // Guarda el DTO en User
-        return user;  // muestra el User
+        userRepository.save(user);  
+        return user;  
     }
 
-    public User registerUserWithRole(UserDTO userDTO) {  // solo para ADMINs
-
-        // Comprobar si email ya está registrado en la bbdd, antes de guardar el DTO en User
+    public User registerUserWithRole(UserDTO userDTO) { 
         if (userRepository.existsByUserEmail(userDTO.getUserEmail())) {
             throw new EmailAlreadyExistsException(
             "\n   ERROR: The email address is already in use. Please choose another one.");
         }
-
-        String encodedPassword = passwordEncoder.encode(userDTO.getUserHashPass());  // Encripta el password
-
-        UserRole role = UserRole.USER;  // Asignamos el rol USER por defecto    
-
-        // Si userRole no es null, lo asignamos directamente
+        String encodedPassword = passwordEncoder.encode(userDTO.getUserHashPass());  
+        UserRole role = UserRole.USER;      
         if (userDTO.getUserRole() != null) {
-            role = userDTO.getUserRole();  // Asignamos el valor recibido directamente
+            role = userDTO.getUserRole();  
         }
 
         User user = new User(
@@ -89,22 +72,20 @@ public class UserService {
                 userDTO.getUserPhone(),
                 encodedPassword,
                 userDTO.getUserEmail(),
-                role);  // asigna el rol proporcionado
+                role);  
 
-        userRepository.save(user);  // Guarda el DTO en User
-        return user;  // muestra el User
+        userRepository.save(user);  
+        return user;  
     }
 
     public void deleteUser(Long id) {
         if (id == null || !userRepository.existsById(id)) {
             throw new GlobalExceptionHandler.UserNotFoundException();
         }
-    
         // Comprobamos si el usuario tiene ofertas asociadas
         if (offerRepository.existsByUserId(id)) {
             throw new GlobalExceptionHandler.OfferAssociatedWithUserException();
         }
-    
         userRepository.deleteById(id);
     }
 
@@ -127,12 +108,7 @@ public class UserService {
         if (id == null || !userRepository.existsById(id)) {
             throw new GlobalExceptionHandler.UserNotFoundException();
         }
-
-        // Obtener el usuario existente
         User user = getUser(id);
-
-        // Actualizar campos solo si no son nulos en postman
-        // ya que userDTO es lo que se envía desde postman
         if (userDTO.getUserName() != null) {
             user.setUserName(userDTO.getUserName());
         }
@@ -147,64 +123,42 @@ public class UserService {
             user.setUserHashPass(encodedPassword); // guarda la pass encriptada, no la pasada por DTO
         }
         if (userDTO.getUserEmail() != null) {
-            // Comprobar si email ya está registrado en la bbdd, antes de guardar el DTO en
-            // User
             if (userRepository.existsByUserEmail(userDTO.getUserEmail())) {
                 throw new EmailAlreadyExistsException(
                         "\n   ERROR: The email address is already in use. Please choose another one.");
             }
             user.setUserEmail(userDTO.getUserEmail());
         }
-
-
-            // PARA MODIFICAR EL ROL ////////
-
-            // Verificar si el usuario autenticado está disponible
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
             throw new AccessDeniedException("You are not authenticated. Please log in.");
         }
-
-        // Permitir la modificación de cualquier campo excepto userRole
         if (userDTO.getUserRole() != null) {
-            // Si el campo userRole no es nulo, verificar si el usuario es admin
             boolean isAdmin = authentication.getAuthorities().stream()
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
-
             if (!isAdmin) {
-                // Si no es admin, lanzar una excepción indicando que no puede modificar el rol
                 throw new AccessDeniedException("Only an admin can modify the user's role.");
             }
-
-            // Si es admin, permitir modificar el campo userRole
             UserRole newRole = userDTO.getUserRole();
             user.setUserRole(newRole);
         }
-
-        // Guardar el usuario actualizado en el repositorio
         userRepository.save(user);
-        return user; // Devolver el usuario actualizado en la respuesta
+        return user; 
     }
-
 
     public boolean login(Long id, String userEmail, String userHashPass) {
         if (id == null || !userRepository.existsById(id)) {
             throw new GlobalExceptionHandler.UserNotFoundException();
         }
-        // le paso userEmail y userHashPass al metodo del repository y lo que devuelve el método se guarda en el objeto user
         Optional<User> user = userRepository.loginByuserIdAnduserEmailAnduserHashPass(id, userEmail, userHashPass);
         if (user.isPresent()) {  
             return true;
         }
         return false;
     }
-    
-
     public void logout(Long id, String userEmail) {
         if (id == null || !userRepository.existsById(id)) {
             throw new GlobalExceptionHandler.UserNotFoundException();
         }
     }
-
-
 }

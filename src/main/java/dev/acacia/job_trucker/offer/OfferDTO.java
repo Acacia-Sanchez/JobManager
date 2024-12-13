@@ -1,7 +1,6 @@
 package dev.acacia.job_trucker.offer;
 
 import java.time.LocalDate;
-
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 
@@ -12,10 +11,10 @@ public class OfferDTO {
     private LocalDate offDate, offStepDate;
     private boolean offFavourite;
 
-    @Enumerated(EnumType.STRING)  // valor del enum se guarda como cadena en la base de datos
-    private OffStep offStep;  // llama a la clase OffStep (necesaria por ser un ENUM)
+    @Enumerated(EnumType.STRING)  
+    private OffStep offStep;  
 
-    private long userId;  // la FK de la tabla users
+    private long userId; 
 
     public OfferDTO(String offCompanyName, String offContactName, String offContactPhone, String offContactEmail,
             String offJobAddress, String offLink, String offSummary, String offRequirements, String offQuestions,
@@ -160,6 +159,4 @@ public class OfferDTO {
     public void setUserId(long userId) {
         this.userId = userId;
     }
-
-
 }

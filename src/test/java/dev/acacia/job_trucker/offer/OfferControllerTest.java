@@ -8,17 +8,11 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import dev.acacia.job_trucker.exceptions.GlobalExceptionHandler;
 import dev.acacia.job_trucker.user.User;
 import dev.acacia.job_trucker.user.UserPrincipal;
-
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -27,13 +21,10 @@ public class OfferControllerTest {
 
     @InjectMocks
     private OfferController offerController;
-
     @Mock
     private OfferService offerService;
-
     @Autowired
     private OfferRepository offerRepository;
-
 
     @BeforeEach
     public void setUp() {
@@ -98,5 +89,4 @@ public class OfferControllerTest {
         offer.setUser(userPrincipal.getUser());
         return offerRepository.findById(id).orElseThrow(() -> new GlobalExceptionHandler.OfferNotFoundException());
     }
-
 }
