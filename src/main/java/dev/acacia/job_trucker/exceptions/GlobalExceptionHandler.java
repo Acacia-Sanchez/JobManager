@@ -49,6 +49,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(customMessage);
     }
 
+    @ExceptionHandler(OfferAssociatedWithUserException.class)
+    public ResponseEntity<String> handelOfferAssociatedWithUserException(OfferAssociatedWithUserException ex) {
+        String customMessage = "\n      ERROR 404: CAN'T BE DELETED USER BECAUSE HAS LINKED OFFERS.";
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(customMessage);
+    }
+    
 
 
     // CLASES INTERNAS ESTATICAS DE EXCEPCIONES ////
@@ -85,5 +91,15 @@ public class GlobalExceptionHandler {
             super(message);
         }
     }
+
+    public static class OfferAssociatedWithUserException extends RuntimeException {
+        public OfferAssociatedWithUserException() {
+            super("\n      ERROR 404: CAN'T BE DELETED USER BECAUSE HAS LINKED OFFERS");
+        }
+        public OfferAssociatedWithUserException(String message) {
+            super(message);
+        }
+    }
+    
 
 }

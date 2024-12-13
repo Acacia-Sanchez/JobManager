@@ -13,15 +13,18 @@ import org.springframework.stereotype.Service;
 import dev.acacia.job_trucker.exceptions.GlobalExceptionHandler;
 import dev.acacia.job_trucker.exceptions.GlobalExceptionHandler.EmailAlreadyExistsException;
 import dev.acacia.job_trucker.exceptions.GlobalExceptionHandler.NoUsersFoundException;
+import dev.acacia.job_trucker.offer.OfferRepository;
 
 @Service
 public class UserService {
 
     private UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final OfferRepository offerRepository;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, OfferRepository offerRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.offerRepository = offerRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -96,6 +99,12 @@ public class UserService {
         if (id == null || !userRepository.existsById(id)) {
             throw new GlobalExceptionHandler.UserNotFoundException();
         }
+    
+        // Comprobamos si el usuario tiene ofertas asociadas
+        if (offerRepository.existsByUserId(id)) {
+            throw new GlobalExceptionHandler.OfferAssociatedWithUserException();
+        }
+    
         userRepository.deleteById(id);
     }
 
