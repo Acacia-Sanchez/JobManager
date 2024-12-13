@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import dev.acacia.job_trucker.exceptions.GlobalExceptionHandler;
 import dev.acacia.job_trucker.exceptions.GlobalExceptionHandler.EmailAlreadyExistsException;
 import dev.acacia.job_trucker.exceptions.GlobalExceptionHandler.UserNotFoundException;
+import dev.acacia.job_trucker.offer.OfferRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -27,6 +28,9 @@ public class UserServiceTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private OfferRepository offerRepository;
 
     @InjectMocks
     private UserService userService;

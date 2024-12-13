@@ -38,6 +38,9 @@ public class OfferDTO {
         this.userId = userId;
     }
 
+    public OfferDTO() {
+    }
+
     public String getOffCompanyName() {
         return offCompanyName;
     }

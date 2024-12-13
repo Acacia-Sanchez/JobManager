@@ -187,5 +187,15 @@ public class Offer {
     public void setUser(User user) {
         this.user = user;
     }
+
+    @Override
+    public String toString() {
+        return "Offer{" + "offCompanyName=" + offCompanyName + ", offContactName=" + offContactName
+                + ", offContactPhone=" + offContactPhone + ", offContactEmail=" + offContactEmail + ", offJobAddress="
+                + offJobAddress + ", offLink=" + offLink + ", offSummary=" + offSummary + ", offRequirements="
+                + offRequirements + ", offQuestions=" + offQuestions + ", offStepComments=" + offStepComments
+                + ", offDate=" + offDate + ", offStepDate=" + offStepDate + ", offFavourite=" + offFavourite
+                + ", offStep=" + offStep + ", user=" + user + "}";
+    }
     
 }
