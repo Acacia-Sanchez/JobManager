@@ -54,10 +54,22 @@ public class OfferController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteOffer(@PathVariable Long id) {
-        offerService.deleteOffer(id); // Pasamos el ID al servicio
+    @DeleteMapping("/delete/{id}")  // @Authe.... autentica  UserPrincipal es el usuario logado
+    public ResponseEntity<String> deleteOffer(@PathVariable Long id, @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        offerService.deleteOffer(id, userPrincipal); // Pasamos el ID al servicio
         return ResponseEntity.ok("\n    Offer number " + id + " deleted successfully");
+    }
+
+    @GetMapping("/get/{id}") 
+    public ResponseEntity<Offer> getOffer(@PathVariable Long id, @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        Offer offer = offerService.getOffer(id, userPrincipal); // Pasamos el ID al servicio
+        return ResponseEntity.ok(offer);
+    }
+
+    @GetMapping("/getAll") 
+    public ResponseEntity<List<Offer>> getAllOffers(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        List<Offer> offers = offerService.getAllOffers(userPrincipal); // Llamamos al servicio
+        return ResponseEntity.ok(offers);
     }
 
 }

@@ -42,7 +42,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(customMessage);
 
     }
-    
+
+    @ExceptionHandler(OfferNotFoundException.class)
+    public ResponseEntity<String> handelOfferNotFoundException(OfferNotFoundException ex) {
+        String customMessage = "\n      ERROR 404: OFFER NOT FOUND.";
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(customMessage);
+    }
+
+
 
     // CLASES INTERNAS ESTATICAS DE EXCEPCIONES ////
     
@@ -69,4 +76,14 @@ public class GlobalExceptionHandler {
             super(message);
         }
     }
+
+    public static class OfferNotFoundException extends RuntimeException {
+        public OfferNotFoundException() {
+            super("\n      ERROR 404: Offer not found");
+        }
+        public OfferNotFoundException(String message) {
+            super(message);
+        }
+    }
+
 }

@@ -12,6 +12,10 @@ import org.springframework.data.jpa.repository.Modifying;
 @Transactional
 public interface OfferRepository extends JpaRepository<Offer, Long> {
 
+    @Query("SELECT o FROM Offer o WHERE o.user.id = :userId")
+    List<Offer> findByUser(@Param("userId") long userId);
+
+    
     // Optional<List<Offer>> findByDateOrderByStepDate(LocalDate date);
     
     /* @Query("SELECT o FROM Offer o WHERE o.summary LIKE %:keyword% OR o.requirements LIKE %:keyword%")

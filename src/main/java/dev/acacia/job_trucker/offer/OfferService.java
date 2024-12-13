@@ -1,6 +1,7 @@
 package dev.acacia.job_trucker.offer;
 
 import java.security.Principal;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,8 +11,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import dev.acacia.job_trucker.exceptions.GlobalExceptionHandler;
+import dev.acacia.job_trucker.exceptions.GlobalExceptionHandler.NoUsersFoundException;
 import dev.acacia.job_trucker.exceptions.GlobalExceptionHandler.UserNotFoundException;
 import dev.acacia.job_trucker.user.User;
+import dev.acacia.job_trucker.user.UserPrincipal;
 import dev.acacia.job_trucker.user.UserRepository;
 
 @Service
@@ -59,12 +62,40 @@ public class OfferService {
         }
     }
 
-    public void deleteOffer(Long id) {
-        if (id == null || !offerRepository.existsById(id)) {
+    public void deleteOffer(Long id, UserPrincipal userPrincipal) {
+        if (id == null) {
             throw new GlobalExceptionHandler.UserNotFoundException();
+        }
+        Offer offer = offerRepository.findById(id).orElseThrow(() -> new GlobalExceptionHandler.OfferNotFoundException());
+        if (offer.getUser().getId() != userPrincipal.getUser().getId()) {
+            throw new GlobalExceptionHandler.OfferNotFoundException();
         }
         offerRepository.deleteById(id);
     }
+
+    public Offer getOffer(Long id, UserPrincipal userPrincipal) {
+        if (id == null)  {
+            throw new GlobalExceptionHandler.OfferNotFoundException();
+        }
+        Offer offer = offerRepository.findById(id).orElseThrow(() -> new GlobalExceptionHandler.OfferNotFoundException());
+        if (offer.getUser().getId() != userPrincipal.getUser().getId()) {
+            throw new GlobalExceptionHandler.OfferNotFoundException();
+        }
+        return offer;
+    }
+
+    public List<Offer> getAllOffers(UserPrincipal userPrincipal) {
+        List<Offer> offers = offerRepository.findByUser(userPrincipal.getUser().getId());
+        if (offers.isEmpty()) {
+            if (userPrincipal.getUser() == null || userPrincipal.getUser().getId() == 0) {
+                throw new GlobalExceptionHandler.UserNotFoundException("El usuario no existe");
+            } else {
+                throw new GlobalExceptionHandler.OfferNotFoundException("El usuario logado no tiene ofertas asignadas");
+            }
+        }
+        return offers;
+    }
+
 
 
 }
