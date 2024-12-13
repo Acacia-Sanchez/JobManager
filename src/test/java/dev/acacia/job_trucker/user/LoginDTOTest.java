@@ -1,7 +1,6 @@
 package dev.acacia.job_trucker.user;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
 
 public class LoginDTOTest {

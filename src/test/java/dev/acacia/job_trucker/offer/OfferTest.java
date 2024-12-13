@@ -1,10 +1,34 @@
 package dev.acacia.job_trucker.offer;
 
 import org.junit.jupiter.api.Test;
+
+import dev.acacia.job_trucker.user.User;
+
 import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
 
 public class OfferTest {
+
+    @Test
+    public void testConstructor() {
+        Offer offer = new Offer("Empresa", "Juan", "123456789", "juan@example.com", "Dirección", "https://example.com", "Resumen", "Requisitos", "Preguntas", "Comentarios", LocalDate.now(), LocalDate.now(), true, OffStep.CANDIDATURA_RECHAZADA, new User());
+        assertNotNull(offer);
+        assertEquals("Empresa", offer.getOffCompanyName());
+        assertEquals("Juan", offer.getOffContactName());
+        assertEquals("123456789", offer.getOffContactPhone());
+        assertEquals("juan@example.com", offer.getOffContactEmail());
+        assertEquals("Dirección", offer.getOffJobAddress());
+        assertEquals("https://example.com", offer.getOffLink());
+        assertEquals("Resumen", offer.getOffSummary());
+        assertEquals("Requisitos", offer.getOffRequirements());
+        assertEquals("Preguntas", offer.getOffQuestions());
+        assertEquals("Comentarios", offer.getOffStepComments());
+        assertEquals(LocalDate.now(), offer.getOffDate());
+        assertEquals(LocalDate.now(), offer.getOffStepDate());
+        assertTrue(offer.isOffFavourite());
+        assertEquals(OffStep.CANDIDATURA_RECHAZADA, offer.getOffStep());
+        assertNotNull(offer.getUser());
+    }
 
     @Test
     public void testGetOffCompanyName_ReturnsCorrectValue() {
@@ -125,6 +149,13 @@ public class OfferTest {
         offer2.setOffDate(LocalDate.now());
     
         assertFalse(offer1.equals(offer2));
+    }
+    
+    @Test
+    public void testToString() {
+        Offer offer = new Offer("Empresa", "Juan", "123456789", "juan@example.com", "Dirección", "https://example.com", "Resumen", "Requisitos", "Preguntas", "Comentarios", LocalDate.now(), LocalDate.now(), true, OffStep.CANDIDATURA_RECHAZADA, new User());
+        String expected = "Offer{offCompanyName=Empresa, offContactName=Juan, offContactPhone=123456789, offContactEmail=juan@example.com, offJobAddress=Dirección, offLink=https://example.com, offSummary=Resumen, offRequirements=Requisitos, offQuestions=Preguntas, offStepComments=Comentarios, offDate=" + LocalDate.now() + ", offStepDate=" + LocalDate.now() + ", offFavourite=true, offStep=CANDIDATURA_RECHAZADA, user=User{id=0, username='null', password='null', email='null', role='null'}}";
+        assertEquals(expected, offer.toString());
     }
     
     @Test

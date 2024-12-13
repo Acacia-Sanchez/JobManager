@@ -26,7 +26,4 @@ public class LoginDTO {
     public void setUserHashPass(String userHashPass) {
         this.userHashPass = userHashPass;
     }
-
-    // AQUÍ DEBAJO IRÍAN LOS GETTERS Y SETTERS DE TODOS LOS ATRIBUTOS
-    // PERO TENGO LOMBOK, ASÍ QUE...
 }
